@@ -165,17 +165,8 @@ public class HashMapImpl<K, V> implements MapImpl<K, V> {
      */
     @Override
     public V get(K key) {
-        int index = hash(key);
-        if (index < hashTable.length && hashTable[index] != null) {
-            List<Node<K, V>> list = hashTable[index].getNodes();
-            for (Node<K, V> node : list) {
-                if (key.equals(node.getKey())) {
-                    return node.getValue();
-                }
-            }
-        }
-
-        return null;
+        Node<K, V> node = getNode(key);
+        return (node == null) ? null : node.getValue();
     }
 
     /**
@@ -185,16 +176,22 @@ public class HashMapImpl<K, V> implements MapImpl<K, V> {
      */
     @Override
     public boolean containsKey(K key) {
+        Node<K, V> node = getNode(key);
+        return node != null;
+    }
+
+    private Node<K, V> getNode(K key) {
         int index = hash(key);
         if (index < hashTable.length && hashTable[index] != null) {
             List<Node<K, V>> list = hashTable[index].getNodes();
             for (Node<K, V> node : list) {
                 if (key.equals(node.getKey())) {
-                    return true;
+                    return node;
                 }
             }
         }
-        return false;
+
+        return null;
     }
 
 
